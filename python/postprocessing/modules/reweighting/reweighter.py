@@ -91,7 +91,7 @@ class ReweighterTemplate(Module):
     if self.acceptEvent(event):
       rw_event = definitions.Event(0, event.genWeight, self.getParticles(event), self.getAlphas(event))
       reweights = rw_event.getReweights(self.rw_module)
-      self.out.fillBranch("Reweights", reweights)
+      self.out.fillBranch("Reweights", [i * event.genWeight for i in reweights])
 
       if self.verb:
         print(rw_event)
@@ -236,6 +236,27 @@ class H4LReweighter(HiggsDecayReweighter):
       rw_parts[1], rw_parts[3] = rw_parts[3], rw_parts[1]
       rw_parts[2], rw_parts[4] = rw_parts[4], rw_parts[2]    
     return rw_parts
+
+class ggFReweighter(LHEReweighter):
+  def acceptEvent(self, event):
+    """
+    Keep number of jets below a specified number.
+    Do not accept events with b jets.
+    Only accept g g > ... events.
+    """
+    parts = Collection(event, self.partsName)
+    #check that the first two parts (incoming partons) are gluons
+    if (parts[0].pdgId!=21) or (parts[1].pdgId!=21):
+      return False
+    #count jets
+    nJets = len(parts)-3 #2 partons and a higgs, everything else are jets
+    if nJets > 0:
+      return False
+    #look for b's
+    for part in parts:
+      if abs(part.pdgId)==5:
+        return False
+    return True
 
 """
 # define modules using the syntax 'name = lambda : constructor' to avoid having them loaded when not needed
