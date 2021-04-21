@@ -9,34 +9,37 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 import PhysicsTools.NanoAODTools.postprocessing.modules.reweighting.reweighter as rw
 
 if __name__ == "__main__":
-    outdir = sys.argv[1]
-    input_file = [sys.argv[2]]
-    rw_path = sys.argv[3]
-    lhe_or_gen = sys.argv[4]
-    try:
-        entries = int(sys.argv[5])
-    except:
-        entries = None
-    try:
-        verb = int(sys.argv[6])
-    except:
-        verb = False
-      
+    from optparse import OptionParser
+    parser = OptionParser(usage="%prog [options] outputDir inputFile rw_path")
+    parser.add_option("-m", "--method", dest="method", type="string", default="lhe")
+    parser.add_option("-N", "--max-entries", dest="maxEntries", type="long", default=None,
+                      help="Maximum number of entries to process from any single given input tree")
+    parser.add_option("--first-entry", dest="firstEntry", type="long", default=0,
+                      help="First entry to process in the three (to be used together with --max-entries)")
+    parser.add_option("-v", dest="verb", action="store_true", default=False)
 
-    if lhe_or_gen=="lhe":
-        modules = [rw.LHEReweighter(rw_path, verb=verb)]
-    elif lhe_or_gen=="gen":
-        modules = [rw.GenReweighter(rw_path,verb=verb)]
-    elif lhe_or_gen=="higgsdecay":
-        modules = [rw.HiggsDecayReweighter(rw_path, verb=verb)]
-    elif lhe_or_gen=="h4l":
-        modules = [rw.H4LReweighter(rw_path, verb=verb)]
+    (options, args) = parser.parse_args()
+    outdir = args[0]
+    input_files = [args[1]]
+    rw_path = args[2]
+
+    if options.method=="lhe":
+        modules = [rw.LHEReweighter(rw_path, verb=options.verb)]
+    elif options.method=="gen":
+        modules = [rw.GenReweighter(rw_path,verb=options.verb)]
+    elif options.method=="higgsdecay":
+        modules = [rw.HiggsDecayReweighter(rw_path, verb=options.verb)]
+    elif options.method=="h4l":
+        modules = [rw.H4LReweighter(rw_path, verb=options.verb)]
+    elif options.method=="ggF":
+        modules = [rw.ggFReweighter(rw_path, verb=options.verb)]
     else:
         raise Exception("Invalid reweighting type")
 
-    p = PostProcessor(outdir, input_file,
+    p = PostProcessor(outdir, input_files,
                       modules=modules,
-                      maxEntries=entries,
+                      maxEntries=options.maxEntries,
                       branchsel="keep_and_drop_input.txt",
-                      outputbranchsel="keep_and_drop_output.txt")
+                      outputbranchsel="keep_and_drop_output.txt",
+                      firstEntry=options.firstEntry)
     p.run()
