@@ -1,0 +1,7 @@
+executable              = run.sh
+Proxy_path = /afs/cern.ch/user/m/mknight/private/x509up
+arguments               = $(Proxy_path) $(ClusterId)$(ProcId)
+output                  = output/rw.$(ClusterId).$(ProcId).out
+error                   = error/rw.$(ClusterId).$(ProcId).err
+log                     = log/rw.$(ClusterId).log
+queue

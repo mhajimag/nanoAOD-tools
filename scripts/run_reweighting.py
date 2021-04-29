@@ -7,6 +7,7 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 import PhysicsTools.NanoAODTools.postprocessing.modules.reweighting.reweighter as rw
+import PhysicsTools.NanoAODTools.postprocessing.modules.reweighting.h4l_analysis as h4l
 
 if __name__ == "__main__":
     from optparse import OptionParser
@@ -17,6 +18,7 @@ if __name__ == "__main__":
     parser.add_option("--first-entry", dest="firstEntry", type="long", default=0,
                       help="First entry to process in the three (to be used together with --max-entries)")
     parser.add_option("-v", dest="verb", action="store_true", default=False)
+    parser.add_option("-s", "--postfix", dest="postfix", type="string", default="")
 
     (options, args) = parser.parse_args()
     outdir = args[0]
@@ -30,16 +32,19 @@ if __name__ == "__main__":
     elif options.method=="higgsdecay":
         modules = [rw.HiggsDecayReweighter(rw_path, verb=options.verb)]
     elif options.method=="h4l":
-        modules = [rw.H4LReweighter(rw_path, verb=options.verb)]
+        modules = [h4l.exampleProducer(), rw.H4LReweighter(rw_path, verb=options.verb)]
     elif options.method=="ggF":
         modules = [rw.ggFReweighter(rw_path, verb=options.verb)]
+    elif options.method=="ttH":
+        modules = [rw.ttHReweighter(rw_path, verb=options.verb)]
     else:
         raise Exception("Invalid reweighting type")
 
     p = PostProcessor(outdir, input_files,
                       modules=modules,
                       maxEntries=options.maxEntries,
-                      branchsel="keep_and_drop_input.txt",
-                      outputbranchsel="keep_and_drop_output.txt",
-                      firstEntry=options.firstEntry)
+                      branchsel="scripts/keep_and_drop_input.txt",
+                      outputbranchsel="scripts/keep_and_drop_output.txt",
+                      firstEntry=options.firstEntry,
+                      postfix=options.postfix)
     p.run()
