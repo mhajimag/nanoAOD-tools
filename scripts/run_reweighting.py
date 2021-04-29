@@ -7,6 +7,7 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 import PhysicsTools.NanoAODTools.postprocessing.modules.reweighting.reweighter as rw
+import PhysicsTools.NanoAODTools.postprocessing.modules.reweighting.h4l_analysis as h4l
 
 if __name__ == "__main__":
     from optparse import OptionParser
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     elif options.method=="higgsdecay":
         modules = [rw.HiggsDecayReweighter(rw_path, verb=options.verb)]
     elif options.method=="h4l":
-        modules = [rw.H4LReweighter(rw_path, verb=options.verb)]
+        modules = [h4l.exampleProducer(), rw.H4LReweighter(rw_path, verb=options.verb)]
     elif options.method=="ggF":
         modules = [rw.ggFReweighter(rw_path, verb=options.verb)]
     elif options.method=="ttH":
