@@ -142,7 +142,7 @@ class StandaloneReweight:
         self.mods = []
 
         if self.mode == 0:
-            """
+            
             if not os.path.isdir(os.path.join(subproc_dir, 'rwdir_0')):
                 os.chdir(subproc_dir)
                 for i in xrange(self.N):
@@ -160,7 +160,8 @@ class StandaloneReweight:
                     pass
                 subprocess.check_call(['cp', 'allmatrix2py.so', 'rwdir_%i/allmatrix2py.so' % i])
             os.chdir(iwd)
-
+            """
+            
             os.chdir(subproc_dir)
 
             for i in xrange(self.N):

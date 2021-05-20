@@ -32,7 +32,7 @@ class ReweighterTemplate(Module):
 
   def getSpin(self, part, event, index):
     try:
-      if abs(part.spin) == 1:
+      if abs(part.spin) <= 1:
         return part.spin
       else:
         return None
