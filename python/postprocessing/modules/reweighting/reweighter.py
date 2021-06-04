@@ -258,6 +258,18 @@ class ggFReweighter(LHEReweighter):
         return False
     return True
 
+class ttHReweighter(GenReweighter):
+  def filterPart(self, part, event, index):
+    if GenReweighter.filterPart(self, part, event, index):
+      if self.isIncomingParton(part, event, index):
+        return True
+      #elif part.pdgId in [25, 6, -6]:
+      #  return True
+      elif part.genPartIdxMother==0:
+        return True
+      else:
+        return False
+
 """
 # define modules using the syntax 'name = lambda : constructor' to avoid having them loaded when not needed
 LHEReweighterConstr = lambda: LHEReweighter(rw_module_path)
