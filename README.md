@@ -1,6 +1,6 @@
 For the original/generic nanoAOD-tools README see [here](READMEs/original.md).
 
-#nanoAOD Reweighting
+# nanoAOD Reweighting
 
 This repository, together with [EFT2Obs](https://github.com/ajgilbert/EFT2Obs), should provide all the tools one needs to reweight nanoAOD MC samples **after** their production. The underlying principles of the tool are described [here](READMEs/underlying_principles.md) and several guides have been written:
 
