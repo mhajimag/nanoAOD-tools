@@ -6,7 +6,7 @@ In this example, we are interested in the SMEFT model and intend to reweight ggF
 
 There are two steps to take. First, we will need to make the reweighting module for the SMEFT ggF process using [EFT2Obs](https://github.com/ajgilbert/EFT2Obs). Second, this nanoAOD tool will take that reweighting module and apply it to the inputted nanoAOD file to make a new nanoAOD file with the desired reweights.
 
-Before following these instructions, make sure you have done the [initial setup](READMEs/initial_setup.md).
+Before following these instructions, make sure you have done the [initial setup](initial_setup.md).
 
 ## Step 1: Make reweighting module
 

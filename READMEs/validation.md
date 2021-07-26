@@ -89,7 +89,7 @@ The plots are all histograms of the log fractional differences between sets of w
 
 This graph shows that the majority of the weights calculated via the standalone reweighting agree very well (within $10^-5$) with the reweights calculated during generation. 
 
-The next plot, named `lhe_EFT2Obs_none.png` compares weights calculated with the EFT2Obs interface alone. This is done by reading the original LHE directly rather than converting to NanoGen and using nanoAOD-tools. If this plot shows that weights are agreeing then you know that the reweighting works **provided the correct information** is fed in. Therefore, this plot may be useful for debugging purposes.
+The next plot, named `lhe_EFT2Obs_none.png`, compares weights calculated with the EFT2Obs interface alone. This is done by reading the original LHE directly rather than converting to NanoGen and using nanoAOD-tools. If this plot shows that weights are agreeing then you know that the reweighting works **provided the correct information** is fed in. Therefore, this plot may be useful for debugging purposes.
 
 ![](validation_plots/lhe_EFT2Obs_None.png)
 
