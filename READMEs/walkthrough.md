@@ -6,7 +6,7 @@ In this example, we are interested in the SMEFT model and intend to reweight ggF
 
 There are two steps to take. First, we will need to make the reweighting module for the SMEFT ggF process using [EFT2Obs](https://github.com/ajgilbert/EFT2Obs). Second, this nanoAOD tool will take that reweighting module and apply it to the inputted nanoAOD file to make a new nanoAOD file with the desired reweights.
 
-Before following these instructions, make sure you have done the [initial setup](READMEs/initial_setup.md).
+Before following these instructions, make sure you have done the [initial setup](initial_setup.md).
 
 ## Step 1: Make reweighting module
 
@@ -75,9 +75,9 @@ python scripts/run_reweighting.py path/to/output path/to/NanoAOD_input.root path
 ```
 There are a number of further options/arguments that could be useful:
 - `-N` specifies the number of entries to run over
-- `-m` specifies the particular reweighting method to use. The default value is `LHE` which tells the script to use the LHEPart branches. To use the default GenPart method, use `-m GEN`. You can design your own methods which is described further [here](READMEs/making_adjustments.md).
+- `-m` specifies the particular reweighting method to use. The default value is `LHE` which tells the script to use the LHEPart branches. To use the default GenPart method, use `-m GEN`. You can design your own methods which is described further [here](making_adjustments.md).
 - `-v` tells the script to run in verbose mode.
-There are more (probably less useful) options that are inherited (and can be found) from [scripts/nano_postproc.py](scripts/nano_postproc.py).
+There are more (probably less useful) options that are inherited (and can be found) from [scripts/nano_postproc.py](../scripts/nano_postproc.py).
 
 Before following these next instructions make sure to have a grid proxy: 
 ```
