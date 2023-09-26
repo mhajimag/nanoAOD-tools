@@ -10,7 +10,6 @@ import numpy
 import copy
 from collections import defaultdict
 
-
 def GetConfigFile(filename):
     with open(filename) as jsonfile:
         cfg = json.load(jsonfile)
@@ -63,14 +62,15 @@ class StandaloneReweight:
         self.no_match_behaviour=no_match_behaviour
 
         self.target_dir = os.path.abspath(rw_pack)
-        self.cfg = GetConfigFile(os.path.join(self.target_dir, 'config.json'))
+#         self.cfg = GetConfigFile(os.path.join(self.target_dir, 'config.json'))
         # self.module = module
         # self.cards = cards_dir
-        self.Npars = len(self.cfg['parameters'])
-        self.parVals = [X['val'] for X in self.cfg['parameters']]
-        self.pars = [X['name'] for X in self.cfg['parameters']]
+        self.Npars = 2
+        
+        self.parVals = [0.1]
+        self.pars = ['cw', 'chwb']
 
-        self.N = 1 + self.Npars * 2 + (self.Npars * self.Npars - self.Npars) / 2
+        self.N = 1025
 
         print '>> %i parameters, %i reweight points' % (self.Npars, self.N)
         self.checkNLO()
@@ -340,7 +340,7 @@ class StandaloneReweight:
         try:
             idx = self.sorted_pdgs.index(evt_sorted_pdgs)
         except ValueError:
-            print '>> Event with PDGs %s does not match any known process' % pdgs
+            if verb: print '>> Event with PDGs %s does not match any known process' % pdgs
             if self.no_match_behaviour=='return False':
                 return False
             else:
@@ -391,23 +391,37 @@ class StandaloneReweight:
             t_final_hels = tuple(final_hels)
             if t_final_hels in hel_dict:
                 nhel = hel_dict[t_final_hels]
-                if verb:
-                    print '>> Selected nhel=%i, from dict %s' % (nhel, self.all_prefix[idx])
+                if verb: print '>> Selected nhel=%i, from dict %s' % (nhel, self.all_prefix[idx])
             else:
-                print '>> Helicity configuration %s was not found in dict, using -1' % final_hels
+                if verb: print '>> Helicity configuration %s was not found in dict, using -1' % final_hels
         scale2 = 0.
         val_ref = 1.0
         for iw in xrange(self.N):
-            if self.mode == 0:
-                with stdchannel_redirected(sys.stdout, os.devnull): #prevent MadLoop output
+            if not self.nlo:
+                if self.mode == 0:
                     val = self.mods[iw].smatrixhel(final_pdgs, final_parts_i, alphas, scale2, nhel)
-            elif self.mode == 1:
-                self.RestoreCache(iw)
-                val = self.mods[0].smatrixhel(final_pdgs, final_parts_i, alphas, scale2, nhel)
-            if self.nlo:
+                elif self.mode == 1:
+                    self.RestoreCache(iw)
+                    val = self.mods[0].smatrixhel(final_pdgs, final_parts_i, alphas, scale2, nhel)
+            else:
+                if self.mode == 0:
+                    with stdchannel_redirected(sys.stdout, os.devnull): #prevent MadLoop output
+                        val = self.mods[iw].smatrixhel(final_pdgs, final_parts_i, alphas, scale2, nhel)
+                elif self.mode == 1:
+                    self.RestoreCache(iw)
+                    val = self.mods[0].smatrixhel(final_pdgs, final_parts_i, alphas, scale2, nhel)
                 val = val[0]
+
             if iw == 0:
-                val_ref = val
+                if val != 0:
+                    val_ref = val
+                else:
+                    print("Found zero weight.")
+                    if self.no_match_behaviour=='return False':
+                        return False
+                    else:
+                        return res   
+ 
             res[iw] = val / val_ref
         return res
 
